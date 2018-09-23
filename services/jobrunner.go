@@ -1,9 +1,8 @@
 package services
 
 import (
-	"ppmeweb/lytnin"
-
 	"github.com/bamzi/jobrunner"
+	"github.com/lytnin/lytnin"
 )
 
 // JobRunner service provides scheduler for the application

@@ -6,10 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"ppmeweb/lytnin"
-
 	"github.com/flosch/pongo2"
 	"github.com/labstack/echo"
+	"github.com/lytnin/lytnin"
 )
 
 // Renderer manages a pongo2 TemplateSet

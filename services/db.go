@@ -2,10 +2,10 @@ package services
 
 import (
 	"net/url"
-	"ppmeweb/lytnin"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"github.com/lytnin/lytnin"
 )
 
 // Database service provides database access to the application

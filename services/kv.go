@@ -1,10 +1,10 @@
 package services
 
 import (
-	"ppmeweb/lytnin"
 	"strings"
 
 	"github.com/gomodule/redigo/redis"
+	"github.com/lytnin/lytnin"
 )
 
 // KVStore service provides key/value store access to the application
