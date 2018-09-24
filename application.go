@@ -48,7 +48,7 @@ func NewApplication() *Application {
 	// single page app
 	e.File(
 		"/app/*",
-		c.Get("SPA_ENTRY_POINT", "frontend/dist/app/index.html"),
+		c.Get("SPA_ENTRY_POINT", "frontend/dist/index.html"),
 	)
 
 	app := &Application{
