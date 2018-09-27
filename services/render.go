@@ -2,19 +2,18 @@ package services
 
 import (
 	"fmt"
-	"html/template"
 	"io"
 	"os"
-	"path/filepath"
 
+	"github.com/CloudyKit/jet"
 	"github.com/labstack/echo"
 	"github.com/lytnin/lytnin"
 )
 
-// Renderer manages a pongo2 TemplateSet
+// Renderer manages Jet Templates
 type Renderer struct {
-	baseDir   string
-	templates *template.Template
+	baseDir string
+	viewSet *jet.Set
 }
 
 // NewRenderer creates a new instance of Renderer
@@ -30,28 +29,31 @@ func NewRenderer(baseDir string) (*Renderer, error) {
 
 	rdr := Renderer{
 		baseDir: baseDir,
+		viewSet: jet.NewHTMLSet(baseDir),
 	}
-	rdr.templates = template.Must(template.ParseFiles(rdr.getAllTemplatsFiles(".html")...))
 
 	return &rdr, nil
 }
 
-func (r *Renderer) getAllTemplatsFiles(extension string) []string {
-	var res = []string{}
-
-	filepath.Walk(r.baseDir, func(path string, f os.FileInfo, err error) error {
-		if filepath.Ext(path) == extension {
-			res = append(res, path)
-		}
-		return nil
-	})
-
-	return res
-}
-
 // Render implements echo.Render interface
 func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return r.templates.ExecuteTemplate(w, name, data)
+	t, err := r.viewSet.GetTemplate(name)
+	if err != nil {
+		return err
+	}
+
+	vars := make(jet.VarMap)
+	// make sure data is a map
+	m, ok := data.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("Please make sure template data is a Map")
+	}
+	// get values
+	for k, v := range m {
+		vars.Set(k, v)
+	}
+
+	return t.Execute(w, vars, nil)
 }
 
 // HTMLRender service provides html template rendering to the application
@@ -69,6 +71,7 @@ func (s *HTMLRender) Init(a *lytnin.Application) {
 	r, err := NewRenderer(s.BaseDir)
 	checkErr(err)
 	a.M.Renderer = r
+	r.viewSet.SetDevelopmentMode(a.Config.Debug)
 
 	a.AddService("htmlrender", s)
 }
