@@ -29,11 +29,24 @@ func NewRenderer(baseDir string) (*Renderer, error) {
 	}
 
 	rdr := Renderer{
-		baseDir:   baseDir,
-		templates: template.Must(template.ParseGlob(filepath.Join(baseDir, "*.html"))),
+		baseDir: baseDir,
 	}
+	rdr.templates = template.Must(template.ParseFiles(rdr.getAllTemplatsFiles(".html")...))
 
 	return &rdr, nil
+}
+
+func (r *Renderer) getAllTemplatsFiles(extension string) []string {
+	var res = []string{}
+
+	filepath.Walk(r.baseDir, func(path string, f os.FileInfo, err error) error {
+		if filepath.Ext(path) == extension {
+			res = append(res, path)
+		}
+		return nil
+	})
+
+	return res
 }
 
 // Render implements echo.Render interface
