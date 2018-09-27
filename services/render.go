@@ -2,19 +2,19 @@ package services
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"os"
 	"path/filepath"
 
-	"github.com/flosch/pongo2"
 	"github.com/labstack/echo"
 	"github.com/lytnin/lytnin"
 )
 
 // Renderer manages a pongo2 TemplateSet
 type Renderer struct {
-	BaseDir string
-	TplSet  *pongo2.TemplateSet
+	baseDir   string
+	templates *template.Template
 }
 
 // NewRenderer creates a new instance of Renderer
@@ -28,29 +28,17 @@ func NewRenderer(baseDir string) (*Renderer, error) {
 		return nil, fmt.Errorf("%s is not a directory", baseDir)
 	}
 
-	rdr := Renderer{}
-	loader, err := pongo2.NewLocalFileSystemLoader(baseDir)
-	if err != nil {
-		return nil, err
+	rdr := Renderer{
+		baseDir:   baseDir,
+		templates: template.Must(template.ParseGlob(filepath.Join(baseDir, "*.html"))),
 	}
-
-	rdr.TplSet = pongo2.NewSet("TplSet-"+filepath.Base(baseDir), loader)
 
 	return &rdr, nil
 }
 
 // Render implements echo.Render interface
 func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	// get template, compile it anf store it in cache
-	tpl, err := r.TplSet.FromCache(name)
-	if err != nil {
-		return err
-	}
-	// convert supplied data to pongo2.Context
-	val, _ := data.(pongo2.Context)
-	// generate render the template
-	err = tpl.ExecuteWriter(val, w)
-	return err
+	return r.templates.ExecuteTemplate(w, name, data)
 }
 
 // HTMLRender service provides html template rendering to the application
