@@ -66,7 +66,7 @@ func (s *HTMLRender) Info() interface{} {
 	return s.BaseDir
 }
 
-// Init initializes the html rendere service and registers it with the application
+// Init initializes the html render service and registers it with the application
 func (s *HTMLRender) Init(a *lytnin.Application) {
 	r, err := NewRenderer(s.BaseDir)
 	checkErr(err)
