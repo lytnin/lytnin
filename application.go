@@ -42,13 +42,7 @@ func NewApplication() *Application {
 	// static assets
 	e.Static(
 		"/public",
-		c.Get("STATIC_DIR", "frontend/dist/static"),
-	)
-
-	// single page app
-	e.File(
-		"/app/*",
-		c.Get("SPA_ENTRY_POINT", "frontend/dist/index.html"),
+		c.Get("STATIC_DIR", "static"),
 	)
 
 	app := &Application{
