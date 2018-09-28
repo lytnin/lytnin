@@ -73,7 +73,7 @@ func (s *HTMLRender) Init(a *lytnin.Application) {
 	a.M.Renderer = r
 	r.viewSet.SetDevelopmentMode(a.Config.Debug)
 
-	a.AddService("htmlrender", s)
+	a.AddService("jetrender", s)
 }
 
 // Close releases any resources used by the service
