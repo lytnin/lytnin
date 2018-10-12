@@ -53,7 +53,7 @@ func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Con
 		vars.Set(k, v)
 	}
 
-	return t.Execute(w, vars, nil)
+	return t.Execute(w, vars, c)
 }
 
 // HTMLRender service provides html template rendering to the application
